@@ -39,6 +39,7 @@ import {
   ExternalLinkIcon as LinkIcon,
   FileUploadIcon as UploadIcon,
   useMediaQuery,
+  BottomSheet,
 } from '@sistent/sistent';
 import { useTheme } from '@/theme';
 import { iconSmall } from 'css/icons.styles';
@@ -46,7 +47,6 @@ import { useInfiniteScrollRef, useMeshModelComponentRouter } from './hooks';
 import ImportModelModal from './ImportModelModal';
 import CreateModelModal from './CreateModelModal';
 import CreateRelationshipModal from './CreateRelationshipModal';
-import MeshModelMobileDetails from './MeshModelMobileDetails';
 
 type MeshModelComponentProps = {
   settingsRouter?: (_router: any) => { handleChangeSelectedTab?: (_tab: string) => void };
@@ -555,11 +555,17 @@ const MeshModelComponent_ = ({
             />
           </DetailsContainer>
           {isMobile ? (
-            <MeshModelMobileDetails
-              view={view}
-              showDetailsData={showDetailsData}
-              setShowDetailsData={setShowDetailsData}
-            />
+            <BottomSheet
+              open={Boolean(
+                showDetailsData?.data &&
+                Object.keys(showDetailsData.data).length > 0 &&
+                showDetailsData.type !== 'none',
+              )}
+              onClose={() => setShowDetailsData({ type: '', data: {} })}
+              title={showDetailsData.data?.displayName || showDetailsData.type}
+            >
+              <MeshModelDetails view={view} showDetailsData={showDetailsData} />
+            </BottomSheet>
           ) : (
             <MeshModelDetails view={view} showDetailsData={showDetailsData} />
           )}
